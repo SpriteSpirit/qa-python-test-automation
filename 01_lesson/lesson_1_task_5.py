@@ -1,4 +1,4 @@
-def get_numbers(num: int):
+def get_numbers(num: str):
     print(num, end='')
 
 
