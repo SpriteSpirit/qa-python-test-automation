@@ -829,3 +829,106 @@ def test_is_empty_long_string(string_utils_instance):
     assert string_utils_instance.is_empty(long_spaces)
     assert not string_utils_instance.is_empty(long_text)
     assert not string_utils_instance.is_empty(f"{long_spaces}{long_text}")
+
+
+# ------------- test_list_to_string ------------- #
+@pytest.mark.positive_test
+@pytest.mark.parametrize('input_list, joiner, expected_str', [
+    # Базовые проверки
+    ([1, 2, 3, 4], ", ", "1, 2, 3, 4"),                     # Список чисел
+    (["Sky", "Pro"], ", ", "Sky, Pro"),                     # Список строк
+    (["Sky", "Pro"], "-", "Sky-Pro"),                       # Другой разделитель
+
+    # Разные типы данных в списке
+    ([1, "two", 3.0, False], ", ", "1, two, 3.0, False"),   # Смешанные типы
+    ([None, True, 0], "|", "None|True|0"),                  # Специальные значения
+
+    # Разные разделители
+    (["a", "b", "c"], "", "abc"),                           # Пустой разделитель
+    (["a", "b", "c"], " ", "a b c"),                        # Пробел
+    (["a", "b", "c"], "\n", "a\nb\nc"),                     # Перенос строки
+    (["a", "b", "c"], "\t", "a\tb\tc"),                     # Табуляция
+
+    # Unicode и специальные символы
+    (["привет", "мир"], ", ", "привет, мир"),               # Кириллица
+    (["🌍", "🌎", "🌏"], "→", "🌍→🌎→🌏"),                 # Эмодзи
+    (["α", "β", "γ"], "|", "α|β|γ"),                        # Греческие буквы
+
+    # Граничные случаи
+    ([1], ", ", "1"),  # Один элемент
+    (["a", "a", "a"], ", ", "a, a, a"),                     # Повторяющиеся элементы
+    ([" ", " "], ", ", " ,  "),                             # Пробелы как элементы
+    (["", "", ""], ", ", ", , "),                           # Пустые строки как элементы
+])
+def test_list_to_string_positive(string_utils_instance, input_list, joiner, expected_str):
+    """
+    Проверяет корректное преобразование списка в строку с разделителем
+    """
+    assert string_utils_instance.list_to_string(input_list, joiner) == expected_str
+
+
+@pytest.mark.positive_test
+def test_list_to_string_default_joiner(string_utils_instance):
+    """
+    Проверяет работу метода с разделителем по умолчанию
+    """
+    input_list = ["a", "b", "c"]
+    expected_str = "a, b, c"
+    assert string_utils_instance.list_to_string(input_list) == expected_str
+
+
+@pytest.mark.negative_test
+@pytest.mark.parametrize('input_list, joiner, expected_result', [
+    (None, ", ", TypeError),            # None вместо списка
+    (123, ", ", TypeError),             # Число вместо списка
+    ({1, 2, 3}, ", ", TypeError),       # Множество вместо списка
+    ({"a": 1}, ", ", KeyError),         # Словарь вместо списка
+    ("abc", ", ", "a, b, c"),           # Строка будет обработана как список символов
+    ([], ", ", ""),                     # Пустой список
+    ([1, 2], None, TypeError),          # None как разделитель
+    ([1, 2], 123, TypeError),           # Число как разделитель
+    ([1, 2], ["a"], TypeError),         # Список как разделитель
+])
+def test_list_to_string_negative(string_utils_instance, input_list, joiner, expected_result):
+    """
+    Проверяет обработку некорректных входных данных
+    """
+    if isinstance(expected_result, type) and issubclass(expected_result, Exception):
+        # Если ожидается исключение
+        with pytest.raises(expected_result):
+            string_utils_instance.list_to_string(input_list, joiner)
+    else:
+        # Если ожидается строковый результат
+        result = string_utils_instance.list_to_string(input_list, joiner)
+        assert result == expected_result
+
+
+@pytest.mark.positive_test
+def test_list_to_string_immutability(string_utils_instance):
+    """
+    Проверяет, что входные данные не изменяются
+    """
+    input_list = ["a", "b", "c"]
+    joiner = ", "
+    original_list = input_list.copy()
+    original_joiner = joiner
+
+    string_utils_instance.list_to_string(input_list, joiner)
+
+    assert input_list == original_list
+    assert joiner == original_joiner
+
+
+@pytest.mark.positive_test
+def test_list_to_string_long_list(string_utils_instance):
+    """
+    Проверяет работу метода с длинным списком
+    """
+    long_list = list(range(1000))
+    result = string_utils_instance.list_to_string(long_list)
+
+    # Проверяем начало и конец результата
+    assert result.startswith("0, 1, 2")
+    assert result.endswith("998, 999")
+    # Проверяем общее количество разделителей
+    assert result.count(", ") == 999
