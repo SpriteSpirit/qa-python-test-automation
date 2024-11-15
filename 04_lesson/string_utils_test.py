@@ -275,7 +275,7 @@ def test_to_list_none_delimiter(string_utils_instance, input_str, input_delimite
 ])
 def test_contains_positive(string_utils_instance, input_str, input_symbol, expected_bool):
     """
-    Расширенное тестирование метода contains
+    Расширенное тестирование метода
     """
     assert string_utils_instance.contains(input_str, input_symbol) == expected_bool
 
@@ -355,3 +355,141 @@ def test_contains_whitespace(string_utils_instance, input_str, input_symbol, exp
     Проверяет работу с различными видами пробельных символов
     """
     assert string_utils_instance.contains(input_str, input_symbol) == expected_bool
+
+
+# ------------- test_delete_symbol ------------- #
+@pytest.mark.positive_test
+@pytest.mark.parametrize('input_str, input_symbol, expected_str', [
+    # Базовые проверки
+    ('Hello, World!', 'H', 'ello, World!'),   # Символ в начале
+    ('Hello, World!', '!', 'Hello, World'),   # Символ в конце
+    ('Hello, World!', 'o', 'Hell, Wrld!'),   # Символ в середине
+    ('Hello, World!', 'x', 'Hello, World!'),  # Отсутствующий символ
+
+    # Специальные символы
+    ('Hello\nWorld', '\n', 'HelloWorld'),     # Перенос строки
+    ('Hello\tWorld', '\t', 'HelloWorld'),     # Табуляция
+    ('Hello\\World', '\\', 'HelloWorld'),     # Обратный слэш
+    ('text\r', '\r', 'text'),                 # Возврат каретки
+    ('text\v', '\v', 'text'),                 # Вертикальная табуляция
+    ('text\f', '\f', 'text'),                 # Перевод страницы
+
+    # Unicode символы
+    ('Привет', 'и', 'Првет'),                   # Кириллица
+    ('Hello, 世界', '世', 'Hello, 界'),           # Китайские символы
+    ('Hello, 🌍', '🌍', 'Hello, '),             # Эмодзи
+    ('⌘⌃⌥⇧', '⌘', '⌃⌥⇧'),                       # Символы Mac
+    ('∑∏∐∆', '∑', '∏∐∆'),                       # Математические символы
+    ('αβγδ', 'β', 'αγδ'),                       # Греческие буквы
+
+    # Регистр
+    ('Hello', 'h', 'Hello'),                    # Регистрозависимый поиск
+    ('HELLO', 'h', 'HELLO'),                    # Регистрозависимый поиск
+
+    # Пробельные символы
+    ('   ', ' ', ''),                           # Строка из пробелов
+    ('\t\n\r', '\t', '\n\r'),                   # Различные пробельные символы
+
+    # Граничные случаи
+    ('a', 'a', ''),                             # Одиночный символ
+    ('aa', 'a', ''),                            # Повторяющийся символ
+    ('', 'a', ''),                              # Пустая строка
+    (' ', '', ' '),                             # Пустой символ в непустой строке
+    ('', '', ''),                               # Пустая строка и пустой символ
+    ('\0', '\0', ''),                           # Нулевой символ
+    ('abc\0def', '\0', 'abcdef'),               # Нулевой символ внутри строки
+    ('text', '', 'text'),                       # Пустой символ для поиска
+
+    # Удаление подстрок
+    ('SkyPro', 'Pro', 'Sky'),                   # Как в примере из документации
+    ('TestTest', 'Test', ''),                   # Повторяющаяся подстрока
+    ('abcabc', 'abc', ''),                      # Последовательное удаление
+    ('Hello World', 'o W', 'Hellorld'),         # Подстрока с пробелом
+    ('TestMiddleTest', 'Middle', 'TestTest'),   # Подстрока в середине
+    ('PreTestPost', 'Test', 'PrePost'),         # Подстрока с окружением
+    ('Te[st]Te[st]', '[st]', 'TeTe'),           # Подстрока со спецсимволами
+    ('Hello  World', '  ', 'HelloWorld'),       # Подстрока из пробелов
+    ('abc123abc123', '123', 'abcabc'),          # Подстрока из цифр
+    ('Test_Test', '_', 'TestTest'),             # Одиночный символ как разделитель
+
+    # Множественное удаление
+    ('aaa', 'a', ''),                           # Удаление всех вхождений
+    ('a.b.c.d', '.', 'abcd'),                   # Удаление разделителя
+    ('111222333', '2', '111333'),               # Удаление цифр
+    ('  a  b  c  ', ' ', 'abc'),                # Удаление пробелов
+])
+def test_delete_symbol_positive(string_utils_instance, input_str, input_symbol, expected_str):
+    """
+    Расширенное тестирование метода
+    """
+    assert string_utils_instance.delete_symbol(input_str, input_symbol) == expected_str
+
+
+@pytest.mark.negative_test
+@pytest.mark.parametrize('input_str, input_symbol, expected_result', [
+    ('text', 'ab', 'text'),     # Поиск подстроки вместо символа
+    ('', 'a', ''),              # Пустая строка
+])
+def test_delete_symbol_negative_values(string_utils_instance, input_str, input_symbol, expected_result):
+    """
+    Проверяет обработку некорректных входных данных
+    """
+    assert string_utils_instance.delete_symbol(input_str, input_symbol) == expected_result
+
+
+@pytest.mark.negative_test
+@pytest.mark.parametrize('input_str, input_symbol, expected_error', [
+    ('text', ['a'], TypeError),                 # Список в качестве символа
+    ('text', 123, TypeError),                   # Число в качестве символа
+    ('text', None, TypeError),                  # None в качестве символа
+    ({'a': 1}, 'a', AttributeError),            # Словарь в качестве строки
+    (True, 'a', AttributeError),                # Boolean в качестве строки
+    (None, 'a', AttributeError),                # None в качестве строки
+    (123, 'a', AttributeError),                 # Число в качестве строки
+    ('text', object(), TypeError),              # Объект как символ
+    ('text', float(1.0), TypeError),            # Float как символ
+    (b'bytes', 'a', TypeError),                 # Bytes как строка
+    (bytearray(b'text'), 'a', TypeError),       # Bytearray как строка
+    (['a'], 'a', AttributeError),               # Список в качестве строки
+])
+def test_delete_symbol_exceptions(string_utils_instance, input_str, input_symbol, expected_error):
+    """
+    Проверяет, что метод вызывает исключения при некорректных входных данных
+    """
+    with pytest.raises(expected_error):
+        string_utils_instance.delete_symbol(input_str, input_symbol)
+
+
+@pytest.mark.positive_test
+@pytest.mark.parametrize('input_str, input_symbol, expected_str', [
+    # Простые эмодзи
+    ('👨👩👧👦', '👨', '👩👧👦'),  # Отдельные эмодзи
+    ('🌍🌎test', '🌍', '🌎test'),   # Простой эмодзи в начале
+    ('code🎮', '🎮', 'code'),        # Простой эмодзи в конце
+    ('👨‍👩‍👧‍👦', '👨', '‍👩‍👧‍👦'),              # Составной эмодзи
+
+    # Одиночные эмодзи с модификаторами
+    ('👩🏻👩🏼👩🏽', '👩🏻', '👩🏼👩🏽'),       # Эмодзи с тоном кожи
+    ('🚩🏳️🏴', '🏳️', '🚩🏴'),       # Эмодзи с вариационным селектором
+])
+def test_delete_symbol_complex_unicode(string_utils_instance, input_str, input_symbol, expected_str):
+    """
+    Проверяет работу с составными Unicode символами
+    """
+    assert string_utils_instance.delete_symbol(input_str, input_symbol) == expected_str
+
+
+@pytest.mark.positive_test
+def test_delete_symbol_immutability(string_utils_instance):
+    """
+    Проверяет, что входные данные не изменяются
+    """
+    input_str = "Hello, World!"
+    input_symbol = "o"
+    original_str = input_str
+    original_symbol = input_symbol
+
+    string_utils_instance.delete_symbol(input_str, input_symbol)
+
+    assert input_str == original_str
+    assert input_symbol == original_symbol
