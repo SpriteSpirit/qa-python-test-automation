@@ -18,7 +18,7 @@ def string_utils_instance():
     ('Привет', 'Привет'),
     ('привет', 'Привет'),
 ])
-def test_capitalize(string_utils_instance, input_str, expected_str):
+def test_capitalize_positive(string_utils_instance, input_str, expected_str):
     """
     Проверяет, что метод capitalize корректно делает первую букву заглавной для положительных тестов.
     """
@@ -34,7 +34,7 @@ def test_capitalize(string_utils_instance, input_str, expected_str):
     ('❌', '❌'),
     ('-!3', '-!3'),
 ])
-def test_capitalize(string_utils_instance, input_str, expected_str):
+def test_capitalize_negative(string_utils_instance, input_str, expected_str):
     """
     Проверяет, что метод capitalize не меняет исходную строку для негативных тестов.
     """
