@@ -282,7 +282,7 @@ def test_contains_positive(string_utils_instance, input_str, input_symbol, expec
 
 @pytest.mark.negative_test
 @pytest.mark.parametrize('input_str, input_symbol, expected_result', [
-    ('text', 'ab', False),      # Поиск подстроки вместо символа
+    ('text', 'ab', False),      # Поиск подстроки вместо одного символа
     (['a'], 'a', True),         # Список в качестве строки
 ])
 def test_contains_negative_values(string_utils_instance, input_str, input_symbol, expected_result):
@@ -426,7 +426,7 @@ def test_delete_symbol_positive(string_utils_instance, input_str, input_symbol, 
 
 @pytest.mark.negative_test
 @pytest.mark.parametrize('input_str, input_symbol, expected_result', [
-    ('text', 'ab', 'text'),     # Поиск подстроки вместо символа
+    ('text', 'ab', 'text'),     # Поиск подстроки вместо одного символа
     ('', 'a', ''),              # Пустая строка
 ])
 def test_delete_symbol_negative_values(string_utils_instance, input_str, input_symbol, expected_result):
@@ -544,7 +544,7 @@ def test_starts_with_positive(string_utils_instance, input_str, input_symbol, ex
 
 @pytest.mark.negative_test
 @pytest.mark.parametrize('input_str, input_symbol, expected_result', [
-    ('text', 'ab', False),      # Поиск подстроки вместо символа
+    ('text', 'ab', False),      # Поиск подстроки вместо одного символа
 ])
 def test_starts_with_negative_values(string_utils_instance, input_str, input_symbol, expected_result):
     """
@@ -595,8 +595,8 @@ def test_starts_with_immutability(string_utils_instance):
 @pytest.mark.positive_test
 @pytest.mark.parametrize('input_str, input_symbol, expected_bool', [
     ('👨‍👩‍👧‍👦', '👨', True),    # Составной эмодзи
-    ('🏳️‍🌈', '🏳️', True),    # Эмодзи с модификатором
-    ('👨🏻‍💻', '👨', True),    # Эмодзи с тоном кожи
+    ('🏳️‍🌈', '🏳️', True),    # Эмодзи флага с модификатором
+    ('👨🏻‍💻', '👨', True),    # Составной эмодзи (человек за компьютером)
 ])
 def test_starts_with_complex_unicode(string_utils_instance, input_str, input_symbol, expected_bool):
     """
@@ -618,3 +618,126 @@ def test_starts_with_whitespace(string_utils_instance, input_str, input_symbol, 
     assert string_utils_instance.starts_with(input_str, input_symbol) == expected_bool
 
 
+# ------------- test_end_with ------------- #
+@pytest.mark.positive_test
+@pytest.mark.parametrize('input_str, input_symbol, expected_bool', [
+    # Базовые проверки
+    ('Missing', 'M', False),        # Символ в начале
+    ('Hello, World!', '!', True),   # Символ в конце
+    ('Hello, World!', 'o', False),  # Символ в середине
+    ('Hello, World!', 'x', False),  # Отсутствующий символ
+
+    # Специальные символы
+    ('Hello World\n', '\n', True),  # Перенос строки
+    ('Hello World\t', '\t', True),  # Табуляция
+    ('Hello World\\', '\\', True),  # Обратный слэш
+    ('text\r', '\r', True),         # Возврат каретки
+    ('text\v', '\v', True),         # Вертикальная табуляция
+    ('text\f', '\f', True),         # Перевод страницы
+
+    # Unicode символы
+    ('Привет', 'т', True),         # Кириллица
+    ('Hello,世界', '界', True),    # Китайские символы
+    ('Hello, 🌍', '🌍', True),     # Эмодзи
+    ('⌘⌃⌥⇧', '⇧', True),           # Символы Mac
+    ('∑∏∐∆', '∆', True),           # Математические символы
+    ('αβγδ', 'δ', True),           # Греческие буквы
+
+    # Регистр
+    ('Hello', 'O', False),          # Регистрозависимый поиск
+    ('HELLO', 'o', False),          # Регистрозависимый поиск
+
+    # Пробельные символы
+    ('   ', ' ', True),             # Строка из пробелов
+    ('\t\n\r', '\r', True),         # Различные пробельные символы
+
+    # Граничные случаи
+    ('a', 'a', True),               # Одиночный символ
+    ('aa', 'a', True),              # Повторяющийся символ
+    ('', 'a', False),               # Пустая строка
+    (' ', '', True),                # Пустой символ в непустой строке
+    ('\0', '\0', True),             # Нулевой символ
+    ('abc\0def', '\0', False),      # Нулевой символ внутри строки
+])
+def test_end_with_positive(string_utils_instance, input_str, input_symbol, expected_bool):
+    """
+    Расширенное тестирование метода
+    """
+    assert string_utils_instance.end_with(input_str, input_symbol) == expected_bool
+
+
+@pytest.mark.negative_test
+@pytest.mark.parametrize('input_str, input_symbol, expected_result', [
+    ('text', 'ab', False),      # Поиск подстроки вместо одного символа
+])
+def test_end_with_negative_values(string_utils_instance, input_str, input_symbol, expected_result):
+    """
+    Проверяет обработку некорректных входных данных, которые должны вернуть False
+    """
+    assert string_utils_instance.end_with(input_str, input_symbol) == expected_result
+
+
+@pytest.mark.negative_test
+@pytest.mark.parametrize('input_str, input_symbol, expected_error', [
+    ('text', ['a'], TypeError),                 # Список в качестве символа
+    ('text', 123, TypeError),                   # Число в качестве символа
+    ('text', None, TypeError),                  # None в качестве символа
+    ({'a': 1}, 'a', AttributeError),            # Словарь в качестве строки
+    (True, 'a', AttributeError),                # Boolean в качестве строки
+    (None, 'a', AttributeError),                # None в качестве строки
+    (123, 'a', AttributeError),                 # Число в качестве строки
+    ('text', object(), TypeError),              # Объект как символ
+    ('text', float(1.0), TypeError),            # Float как символ
+    (b'bytes', 'a', TypeError),                 # Bytes как строка
+    (bytearray(b'text'), 'a', TypeError),       # Bytearray как строка
+    (['a'], 'a', AttributeError),               # Список в качестве строки
+])
+def test_end_with_exceptions(string_utils_instance, input_str, input_symbol, expected_error):
+    """
+    Проверяет, что метод вызывает исключения при определенных некорректных входных данных
+    """
+    with pytest.raises(expected_error):
+        string_utils_instance.end_with(input_str, input_symbol)
+
+
+@pytest.mark.positive_test
+def test_end_with_immutability(string_utils_instance):
+    """
+    Проверяет, что входные данные не изменяются
+    """
+    input_str = "Hello, World!"
+    input_symbol = "o"
+    original_str = input_str
+    original_symbol = input_symbol
+
+    string_utils_instance.end_with(input_str, input_symbol)
+
+    assert input_str == original_str
+    assert input_symbol == original_symbol
+
+
+@pytest.mark.positive_test
+@pytest.mark.parametrize('input_str, input_symbol, expected_bool', [
+    ('👨‍👩‍👧‍👦', '👦', True),    # Составной эмодзи
+    ('🏳️‍🌈', '🌈', True),    # Эмодзи с модификатором
+    ('👨🏻‍💻', '💻', True),    # Эмодзи с тоном кожи
+])
+def test_end_with_complex_unicode(string_utils_instance, input_str, input_symbol, expected_bool):
+    """
+    Проверяет работу с составными Unicode символами
+    """
+    assert string_utils_instance.end_with(input_str, input_symbol) == expected_bool
+
+
+@pytest.mark.positive_test
+@pytest.mark.parametrize('input_str, input_symbol, expected_bool', [
+    (' \t\n\r\f\v', ' ', False),     # Все виды пробельных символов в начале строки
+    (' \t\n\r\f\v', '\v', True),     # Все виды пробельных символов в конце строки
+    ('\u2000', '\u2000', True),      # Unicode пробел
+    ('\xa0', '\xa0', True),          # Non-breaking space
+])
+def test_end_with_whitespace(string_utils_instance, input_str, input_symbol, expected_bool):
+    """
+    Проверяет работу с различными видами пробельных символов
+    """
+    assert string_utils_instance.end_with(input_str, input_symbol) == expected_bool
