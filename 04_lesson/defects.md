@@ -137,4 +137,69 @@ S5
 
 </details>
 
+<details>
+  <summary>
+    <strong>5. BR-5 Методы класса StringUtils следует объявить как static</strong>
+  </summary>
+
+### Заголовок:
+Методы класса `StringUtils` следует объявить как `static`
+
+### Приоритет:
+Low
+
+### Серьезность:
+S5
+
+### Описание:
+Все методы класса `StringUtils` не используют состояние объекта (`self`) кроме вызова других методов класса. 
+Это указывает на то, что методы могут быть объявлены как статические, что даст следующие преимущества:
+
+- Не требуется создание экземпляра класса для использования методов
+- Улучшение читаемости кода (явное указание, что методы не зависят от состояния объекта)
+- Небольшое улучшение производительности (нет необходимости передавать `self`)
+
+### Фактический результат:
+```python
+class StringUtils:
+    def capitalize(self, string: str) -> str:
+        return string.capitalize()
+    
+    def trim(self, string: str) -> str:
+        whitespace = " "
+        while string.startswith(whitespace):
+            string = string.removeprefix(whitespace)
+        return string
+```
+
+### Ожидаемый результат:
+```python
+class StringUtils:
+    @staticmethod
+    def capitalize(string: str) -> str:
+        return string.capitalize()
+    
+    @staticmethod
+    def trim(string: str) -> str:
+        whitespace = " "
+        while string.startswith(whitespace):
+            string = string.removeprefix(whitespace)
+        return string
+```
+
+### Использование:
+**До:**
+```python
+utils = StringUtils()
+result = utils.trim("  text  ")
+```
+
+**После:**
+```python
+result = StringUtils.trim("  text  ")
+```
+
+> ### Примечание
+> Изменение не влияет на функциональность, но улучшает дизайн кода и его использование.
+</details>
   
