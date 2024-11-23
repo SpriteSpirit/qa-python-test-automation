@@ -1,12 +1,11 @@
 from time import sleep
 
 from selenium import webdriver
-from selenium.webdriver import Keys
 from selenium.webdriver.common.by import By
 from selenium.webdriver.firefox.service import Service as FirefoxService
 from webdriver_manager.firefox import GeckoDriverManager
 from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support import expected_conditions as ec
 
 # Настройка драйвера для Firefox
 driver = webdriver.Firefox(service=FirefoxService(GeckoDriverManager().install()))
@@ -17,7 +16,7 @@ try:
 
     # Найти поле ввода
     input_field = WebDriverWait(driver, 10).until(
-        EC.presence_of_element_located((By.XPATH, '//*[@id="content"]/div/div/div/input'))
+        ec.presence_of_element_located((By.XPATH, '//*[@id="content"]/div/div/div/input'))
     )
 
     #  Шаг 2: Ввести текст в поле ввода 1000
