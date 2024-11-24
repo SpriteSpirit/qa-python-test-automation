@@ -15,12 +15,8 @@ driver.get(url)
 button = driver.find_element(By.XPATH, "//button[contains(text(), 'Button with Dynamic ID')]")
 
 # Кликнуть по кнопке
-if button:
-    button.click()
-    print("Кнопка нажата")
-
-# Ожидание 5 сек
-sleep(5)
+button.click()
+print("Кнопка нажата")
 
 # Закрытие браузера
 driver.quit()
