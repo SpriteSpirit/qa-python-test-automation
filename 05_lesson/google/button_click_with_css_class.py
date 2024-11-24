@@ -18,8 +18,5 @@ button = driver.find_element(By.CSS_SELECTOR, "button.btn-primary")
 button.click()
 print("Кнопка нажата")
 
-# Ожидание 5 сек
-sleep(5)
-
 # Закрытие браузера
 driver.quit()
