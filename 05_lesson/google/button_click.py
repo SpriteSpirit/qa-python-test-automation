@@ -1,9 +1,7 @@
-from time import sleep
-
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service as ChromeService
 from selenium.webdriver.common.by import By
-from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
 from webdriver_manager.chrome import ChromeDriverManager
 
@@ -22,14 +20,11 @@ for i in range(5):
 
 # Собрать со страницы список кнопок Delete
 elements = WebDriverWait(driver, 10).until(
-    EC.presence_of_all_elements_located((By.CSS_SELECTOR, 'button.added-manually'))
+    ec.presence_of_all_elements_located((By.CSS_SELECTOR, 'button.added-manually'))
 )
 
 # Вывести на экран размер списка
-print(f'{len(elements)=}')
-
-# Ожидание 10 сек
-sleep(10)
+print(f'Количество кнопок Delete: {len(elements)}')
 
 # Закрытие браузера
 driver.quit()
