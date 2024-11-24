@@ -12,7 +12,7 @@ url = 'http://uitestingplayground.com/classattr'
 driver.get(url)
 
 # Найти кнопку
-button = driver.find_element(By.CSS_SELECTOR, "button.class2")
+button = driver.find_element(By.CSS_SELECTOR, "button.btn-primary")
 
 # Кликнуть по кнопке
 button.click()
