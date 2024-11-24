@@ -26,10 +26,7 @@ elements = WebDriverWait(driver, 10).until(
 )
 
 # Вывести на экран размер списка
-print(f'{len(elements)=}')
-
-# Ожидание 10 сек
-sleep(10)
+print(f'Количество кнопок Delete: {len(elements)}')
 
 # Закрытие браузера
 driver.quit()
