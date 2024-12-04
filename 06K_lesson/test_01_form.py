@@ -1,5 +1,3 @@
-from time import sleep
-
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service as ChromeService
 from selenium.webdriver.common.by import By
@@ -18,6 +16,10 @@ def driver():
 
 
 def test_form_submission_with_valid_data(driver):
+    """
+    Тестирует заполнение полей формы.
+    """
+
     input_data = {
         "First name": "Иван",
         "Last name": "Петров",
