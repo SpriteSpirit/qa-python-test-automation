@@ -28,7 +28,7 @@ def test_calculator_operations(driver):
     # Установка задержки выполнения операций калькулятора на 45 секунд
     delay_input_field = driver.find_element(By.ID, 'delay')
     delay_input_field.clear()
-    delay_input_field.send_keys('45')
+    delay_input_field.send_keys(45)
 
     # Выполнение операции: 7 + 8 =
     click_button('7')
@@ -36,6 +36,7 @@ def test_calculator_operations(driver):
     click_button('8')
     click_button('=')
 
-    # Ожидание результата '15' в поле вывода с максимальным ожиданием 50 секунд
-    result_element = WebDriverWait(driver, 50).until(ec.presence_of_element_located((By.CSS_SELECTOR, 'div.screen')))
-    assert result_element.text == '15', f"Ожидаемый результат '15', но получен '{result_element.text}'"
+    # Ожидаем результат '15' в поле вывода с максимальным ожиданием 50 секунд
+    assert WebDriverWait(driver, 50).until(
+        ec.text_to_be_present_in_element((By.CSS_SELECTOR, 'div.screen'), '15')
+    ), "Не удалось получить результат"
