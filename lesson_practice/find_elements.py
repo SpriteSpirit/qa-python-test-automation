@@ -11,7 +11,8 @@ driver = webdriver.Edge(service=EdgeService(
 driver.get("https://ya.ru/")
 
 element = driver.find_element(By.CSS_SELECTOR, "#text")
-print(element) # (session="32e7dc49c21996914159dabff302c06d",
+print(element)
+# (session="32e7dc49c21996914159dabff302c06d",
 # element="f.85979FECF2BB7C3C58F97E54331AECA6.d.BF282807DC80E99A1E8B32198BB535E7.e.139")
 
 element.clear()
