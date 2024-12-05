@@ -14,12 +14,12 @@ driver.get("https://bonigarcia.dev/selenium-webdriver-java/loading-images.html")
 # явное ожидание изображения
 WebDriverWait(driver, 30, 0.1).until(
     ec.presence_of_element_located(
-        (By.CSS_SELECTOR, '#landscape')
+        (By.CSS_SELECTOR, '#award')
     )
 )
 
 # Найти изображение
-img = driver.find_element(By.CSS_SELECTOR, '#landscape')
+img = driver.find_element(By.CSS_SELECTOR, '#award')
 
 # Получить значение атрибута src у изображения
 src_text = img.get_attribute("src")
