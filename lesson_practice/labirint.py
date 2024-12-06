@@ -28,7 +28,8 @@ for book in books:
         author = book.find_element(By.CSS_SELECTOR, f'div.{author}').text
         price = book.find_element(By.CSS_SELECTOR, f'div.{price}').text
         title = book.find_element(By.CSS_SELECTOR, f'a.{title}').text
-    except:
+    except Exception as e:
+        print(f"Error: {str(e)}")
         author = "Не указан"
         price = "Не указан"
         title = "Не указан"
