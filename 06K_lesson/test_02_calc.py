@@ -37,6 +37,9 @@ def test_calculator_operations(driver):
     click_button('=')
 
     # Ожидаем результат '15' в поле вывода с максимальным ожиданием 50 секунд
-    assert WebDriverWait(driver, 50).until(
-        ec.text_to_be_present_in_element((By.CSS_SELECTOR, 'div.screen'), '15')
-    ), "Не удалось получить результат"
+    try:
+        WebDriverWait(driver, 50).until(
+            ec.text_to_be_present_in_element((By.CSS_SELECTOR, 'div.screen'), '15')
+        )
+    except Exception as e:
+        assert False, f"Не удалось получить результат '15'. Ошибка: {str(e)}"
