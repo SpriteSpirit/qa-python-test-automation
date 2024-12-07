@@ -18,19 +18,18 @@ def driver():
 def test_swag_labs_checkout(driver):
     total_price = 0
 
-    # Открываем сайт
-    driver.get("https://www.saucedemo.com/")
-
     # Получаем логин и пароль
-    login_creds = driver.find_element(By.ID, 'login_credentials').text
-    login_pass = driver.find_element(By.CLASS_NAME, 'login_password').text
+    login_creds = WebDriverWait(driver, 10).until(
+        ec.presence_of_element_located((By.ID, 'login_credentials'))).text
+    login_pass = WebDriverWait(driver, 10).until(
+        ec.presence_of_element_located((By.CLASS_NAME, 'login_password'))).text
     user_name = login_creds.split('\n')[1]
     user_pass = login_pass.split('\n')[1]
 
     # Логинимся
-    driver.find_element(By.ID, 'user-name').send_keys(user_name)
-    driver.find_element(By.ID, 'password').send_keys(user_pass)
-    driver.find_element(By.ID, 'login-button').click()
+    WebDriverWait(driver, 10).until(ec.presence_of_element_located((By.ID, 'user-name'))).send_keys(user_name)
+    WebDriverWait(driver, 10).until(ec.presence_of_element_located((By.ID, 'password'))).send_keys(user_pass)
+    WebDriverWait(driver, 10).until(ec.presence_of_element_located((By.ID, 'login-button'))).click()
 
     # Проверяем, что страница загружена, получая список товаров
     inventory_list = WebDriverWait(driver, 10).until(
@@ -43,7 +42,6 @@ def test_swag_labs_checkout(driver):
 
     for item in inventory_list:
         item_name = item.find_element(By.CSS_SELECTOR, 'div.inventory_item_name').text.lower()
-
         if any(product == item_name for product in items_to_add):
             item_price = item.find_element(By.CLASS_NAME, 'inventory_item_price').text.replace('$', '')
             total_price += float(item_price)
@@ -51,10 +49,12 @@ def test_swag_labs_checkout(driver):
             print(f"Добавлен товар: {item_name}, цена: ${item_price}")
 
     # Переходим в корзину
-    driver.find_element(By.CSS_SELECTOR, 'a.shopping_cart_link').click()
+    WebDriverWait(driver, 10).until(
+        ec.presence_of_element_located((By.CSS_SELECTOR, 'a.shopping_cart_link'))).click()
 
     # Нажимаем кнопку Checkout
-    driver.find_element(By.CSS_SELECTOR, '#checkout').click()
+    WebDriverWait(driver, 10).until(
+        ec.presence_of_element_located((By.CSS_SELECTOR, '#checkout'))).click()
 
     # Заполняем форму
     user_data = {
@@ -64,17 +64,22 @@ def test_swag_labs_checkout(driver):
     }
     WebDriverWait(driver, 10).until(
         ec.presence_of_element_located((By.ID, 'first-name'))).send_keys(user_data['first-name'])
-
-    driver.find_element(By.ID, 'last-name').send_keys(user_data['last-name'])
-    driver.find_element(By.ID, 'postal-code').send_keys(user_data['zip-code'])
-    driver.find_element(By.CSS_SELECTOR, '#continue').click()
+    WebDriverWait(driver, 10).until(
+        ec.presence_of_element_located((By.ID, 'last-name'))).send_keys(user_data['last-name'])
+    WebDriverWait(driver, 10).until(
+        ec.presence_of_element_located((By.ID, 'postal-code'))).send_keys(user_data['zip-code'])
+    WebDriverWait(driver, 10).until(
+        ec.presence_of_element_located((By.CSS_SELECTOR, '#continue'))).click()
 
     # Проверяем итоговую сумму
-    summary_label = driver.find_element(By.CLASS_NAME, 'summary_total_label').text
-    summary_tax_label = driver.find_element(By.CLASS_NAME, 'summary_tax_label').text
+    summary_label = WebDriverWait(driver, 10).until(
+        ec.presence_of_element_located((By.CLASS_NAME, 'summary_total_label'))).text
+    summary_tax_label = WebDriverWait(driver, 10).until(
+        ec.presence_of_element_located((By.CLASS_NAME, 'summary_tax_label'))).text
 
     total_cart_price = float(summary_label.split()[1].replace('$', ''))
     total_tax = float(summary_tax_label.split()[1].replace('$', ''))
 
     # Проверяем, что итоговая сумма совпадает
-    assert total_cart_price == total_price + total_tax, "Итоговая сумма не совпадает"
+    assert total_cart_price == total_price + total_tax, \
+        f"Итоговая сумма не совпадает. Ожидалось: {total_price + total_tax}, Получено: {total_cart_price}"
