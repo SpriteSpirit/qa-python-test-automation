@@ -62,7 +62,14 @@ def test_form_submission_with_valid_data(driver):
         div_alert = label.find_element(By.CSS_SELECTOR, div_alert_selector).get_attribute('class')
         field_name = label.text
 
-        if "N/A" not in field_name and "Zip code" not in field_name:
-            assert 'success' in div_alert, f"Поле '{field_name}' не выделено зеленым цветом"
-        elif "N/A" in field_name and "Zip code" in field_name:
-            assert 'danger' in div_alert, f"Zip code поле '{field_name}' не выделено красным"
+        # Проверка для всех полей, кроме "N/A" и "Zip code"
+        assert ('N/A' not in field_name and 'Zip code' not in field_name) == ('success' in div_alert), \
+            f"Поле '{field_name}' не прошло проверку: ожидается класс 'success'"
+
+        # Проверка для поля "Zip code"
+        assert ('Zip code' in field_name) == ('danger' in div_alert), \
+            f"Поле '{field_name}' не прошло проверку: ожидается класс 'danger' для Zip code"
+
+        # Проверка для поля "N/A"
+        assert ('N/A' in field_name) == ('danger' in div_alert), \
+            f"Поле '{field_name}' не прошло проверку: ожидается класс 'danger' для N/A"
