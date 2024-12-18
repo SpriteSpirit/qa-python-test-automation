@@ -1,6 +1,4 @@
 import pytest
-from selenium.webdriver.chrome.service import Service as ChromeService
-from webdriver_manager.chrome import ChromeDriverManager
 from utilities.logger_utils import logger
 from selenium import webdriver
 
@@ -21,15 +19,15 @@ def chrome_driver():
         После выполнения всех тестов закрывает браузер через driver.quit()
     """
 
-    driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()))
+    driver = webdriver.Chrome()
     yield driver
     driver.quit()
 
-    logger.info('Chrome WebDriver closed')
+    logger.info('Chrome WebDriver закрыт')
 
 
-@pytest.fixture
-def mock_input_data():
+@pytest.fixture(scope="function")
+def mock_input_form_data() -> dict:
     """
     Фикстура для создания мока тестовых данных.
 
@@ -48,4 +46,47 @@ def mock_input_data():
         "Country": "Россия",
         "Job position": "QA",
         "Company": "SkyPro"
+    }
+
+
+@pytest.fixture(scope="function")
+def mock_login_data() -> dict:
+    """
+    Фикстура для создания мока тестовых данных для авторизации.
+
+    Возвращает:
+        dict: Словарь с тестовыми данными.
+    """
+
+    return {
+        "login": "standard_user",
+        "password": "secret_sauce",
+    }
+
+
+@pytest.fixture(scope="function")
+def mock_items_data() -> list:
+    """
+    Фикстура для создания мока тестовых данных для списка товаров.
+
+    Возвращает:
+        list: Список с тестовыми данными.
+    """
+
+    return ["sauce labs backpack", "sauce labs bolt t-shirt", "sauce labs onesie"]
+
+
+@pytest.fixture(scope="function")
+def mock_input_order_data() -> dict:
+    """
+    Фикстура для создания мока тестовых данных пользователя для оформления заказа.
+
+    Возвращает:
+        dict: Словарь с тестовыми данными.
+    """
+
+    return {
+        "first-name": "Иван",
+        "last-name": "Петров",
+        "postal-code": "190003",
     }
