@@ -8,9 +8,9 @@ from lesson_07.form_pages.form_page_enum_selectors import FormSelector
 @allure.tag("web")
 @allure.label("owner", "khalueva.angelina")
 @allure.story("Form page")
-@allure.description("Этот тест проверяет заполнение и отправку формы.")
+@allure.description("Проверяет заполнение и отправку формы.")
 @allure.severity(allure.severity_level.CRITICAL)
-def test_form_page(chrome_driver, mock_input_data):
+def test_form_page(chrome_driver, mock_input_form_data):
     """
     Тестирование заполнения и отправки формы.
     """
@@ -29,7 +29,7 @@ def test_form_page(chrome_driver, mock_input_data):
 
     with allure.step("Заполнение полей формы"):
         logger.debug("Заполнение полей формы")
-        form_page.fill_input_fields(mock_input_data)
+        form_page.fill_input_fields(mock_input_form_data)
 
     with allure.step("Отправка формы"):
         logger.debug("Отправка формы")
@@ -40,6 +40,7 @@ def test_form_page(chrome_driver, mock_input_data):
         results = form_page.get_results()
 
         logger.debug("Проверка результатов")
+
         for field_name, div_class in results.items():
             if 'N/A' not in field_name and 'Zip code' not in field_name:
                 assert 'success' in div_class, \

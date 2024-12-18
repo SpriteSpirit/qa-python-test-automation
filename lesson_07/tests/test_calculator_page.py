@@ -8,7 +8,7 @@ from lesson_07.calculator_pages.calculator_page_enum_selectors import Calculator
 @allure.tag("web")
 @allure.label("owner", "khalueva.angelina")
 @allure.story("Calculator page")
-@allure.description("Этот тест проверяет результат сложения двух операндов на калькуляторе через 45 с.")
+@allure.description("Проверяет результат сложения двух операндов на калькуляторе через 45 с.")
 @allure.severity(allure.severity_level.NORMAL)
 def test_form_page(chrome_driver):
     """
