@@ -12,4 +12,3 @@ class FormSelector(Enum):
     SUBMIT_BUTTON = (By.CSS_SELECTOR, 'button[type=submit]')
     INPUT_FIELD = (By.CSS_SELECTOR, 'input.form-control')
     DIV_ALERT = (By.CSS_SELECTOR, '.alert')
-    PAGE_TITLE = (By.CSS_SELECTOR, 'h1')

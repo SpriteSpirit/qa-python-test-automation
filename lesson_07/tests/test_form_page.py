@@ -1,6 +1,7 @@
 import allure
 from utilities.logger_utils import logger
-from lesson_07.form_pages.form_page import FormPage
+from lesson_07.form_pages.main_page import FormPage
+from lesson_07.form_pages.form_page_enum_selectors import FormSelector
 
 
 @allure.title("Form page test")
@@ -24,7 +25,7 @@ def test_form_page(chrome_driver, mock_input_data):
 
     with allure.step("Ожидание загрузки формы"):
         logger.debug("Ожидание загрузки формы")
-        form_page.wait_for_form_to_load()
+        form_page.wait_for_form_to_load(FormSelector.FORM_LABEL.value)
 
     with allure.step("Заполнение полей формы"):
         logger.debug("Заполнение полей формы")
