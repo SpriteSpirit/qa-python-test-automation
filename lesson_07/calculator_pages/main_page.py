@@ -4,7 +4,7 @@ from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as ec
 
 from lesson_07.calculator_pages.calculator_page_enum_selectors import CalculatorSelector
-from utilities.logger_utils import logger
+# from utilities.logger_utils import logger
 
 
 class CalculatorPage:
@@ -23,7 +23,7 @@ class CalculatorPage:
 
         self.driver.get(self.url)
 
-    def wait_to_load_result_and_compare_text(self, locator: Tuple[str, str], text: str,  timeout=10):
+    def wait_to_load_result_and_compare_text(self, locator: Tuple[str, str], text: str, timeout=10):
         """
         Ожидание загрузки результата и проверки содержания текста
         """
@@ -36,8 +36,7 @@ class CalculatorPage:
         """
 
         all_buttons = self.driver.find_elements(*CalculatorSelector.ANY_BUTTON.value)
-
-        logger.debug(f"All buttons: {len(all_buttons)}")
+        # logger.debug(f"All buttons: {len(all_buttons)}")
 
         for button in all_buttons:
             # logger.debug(f"Button: {button.text}")

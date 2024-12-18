@@ -22,7 +22,7 @@ class FormPage:
 
         self.driver.get(self.url)
 
-    def wait_for_form_to_load(self,  locator: Tuple[str, str], timeout=10):
+    def wait_for_form_to_load(self, locator: Tuple[str, str], timeout=10):
         """
         Ожидание загрузки формы.
         """
