@@ -1,5 +1,6 @@
+from typing import Tuple
+
 from selenium.webdriver.support.wait import WebDriverWait
-from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support import expected_conditions as ec
 
 from lesson_07.form_pages.form_page_enum_selectors import FormSelector
@@ -21,13 +22,12 @@ class FormPage:
 
         self.driver.get(self.url)
 
-    def wait_for_form_to_load(self, timeout=10):
+    def wait_for_form_to_load(self,  locator: Tuple[str, str], timeout=10):
         """
         Ожидание загрузки формы.
         """
-        WebDriverWait(self.driver, timeout).until(
-            ec.presence_of_element_located(FormSelector.FORM_LABEL.value)
-        )
+
+        WebDriverWait(self.driver, timeout).until(ec.presence_of_element_located(locator))
 
     def fill_input_fields(self, input_data: dict) -> None:
         """
