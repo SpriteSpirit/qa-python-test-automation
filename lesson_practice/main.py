@@ -10,7 +10,6 @@ from webdriver_manager.chrome import ChromeDriverManager
 driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()))
 driver.get("https://www.saucedemo.com/")
 
-
 login_input_field = driver.find_element(By.ID, 'user-name')
 password_input_field = driver.find_element(By.ID, 'password')
 
@@ -39,8 +38,8 @@ password_input_field.send_keys(user_pass)
 login_button.click()
 
 inventory_list = WebDriverWait(driver, 10).until(
-        ec.presence_of_all_elements_located((By.CLASS_NAME, 'inventory_item'))
-    )
+    ec.presence_of_all_elements_located((By.CLASS_NAME, 'inventory_item'))
+)
 
 assert inventory_list, "Не удалось получить результат"
 
@@ -91,7 +90,6 @@ summary_total_label = driver.find_element(By.CLASS_NAME, 'summary_total_label')
 browser_cart_total_price = float(summary_total_label.text.split()[1].replace('$', ''))
 
 total_price += total_tax_value
-
 
 sleep(10)
 assert browser_cart_total_price == total_price
