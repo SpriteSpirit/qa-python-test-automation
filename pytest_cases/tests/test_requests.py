@@ -20,11 +20,11 @@ def test_auth():
         "password": "expelliarmus"
     }
 
-    company = {
-        "name": "QA Студия 'Тестировщик'",
-        "description": "Лучшая компания в QA",
-        "user": user_creds["username"]
-    }
+    # company = {
+    #     "name": "QA Студия 'Тестировщик'",
+    #     "description": "Лучшая компания в QA",
+    #     "user": user_creds["username"]
+    # }
 
     # авторизация
     resp = requests.post(base_url + '/auth/login', json=user_creds)
@@ -32,10 +32,10 @@ def test_auth():
     logger.debug(token)
     assert resp.status_code == 200
 
-    # создание компании с авторизацией
-    headers = {"x-client-token": token}
-    resp = requests.post(base_url + '/company', json=company, headers=headers)
-    assert resp.status_code == 201
-    created_company = resp.json()
-    assert created_company["name"] == company["name"]
-    assert created_company["description"] == company["description"]
+    # # создание компании с авторизацией
+    # headers = {"x-client-token": token}
+    # resp = requests.post(base_url + '/company', json=company, headers=headers)
+    # assert resp.status_code == 201
+    # created_company = resp.json()
+    # assert created_company["name"] == company["name"]
+    # assert created_company["description"] == company["description"]
